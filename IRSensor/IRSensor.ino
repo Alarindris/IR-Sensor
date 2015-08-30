@@ -1,31 +1,45 @@
-#include <Button.h>
-#include <Relay.h>
+#include <Bounce2.h>
 
-int LED = 13;
-int IR = 2;
-int AIR = 3;
+#define BUTTON_PIN 2
+#define ION_PIN 13
+#define AIR_PIN 12
+#define RELAY_OFFSET 50
+#define ON_DELAY 1000
+#define OFF_DELAY 500
 
-int ON_DELAY = 1000;
-int OFF_DELAY = 500;
+Bounce debouncer = Bounce(); 
 
 void setup() {
-    pinMode(LED, OUTPUT);
-    pinMode(IR, INPUT);
-    pinMode(AIR, OUTPUT);
+  pinMode(BUTTON_PIN,INPUT_PULLUP);
+  debouncer.attach(BUTTON_PIN);
+  debouncer.interval(25); // interval in ms
+  pinMode(ION_PIN, OUTPUT);
+  pinMode(AIR_PIN, OUTPUT);
+
+}
+ 
+void loop() {
+  int value;
+  int prevVal;
+  
+  while(true){
+    debouncer.update();
+    value = debouncer.read();
+    if(value != prevVal){
+      if ( value == LOW ) {
+        digitalWrite(AIR_PIN, HIGH);
+        delay(RELAY_OFFSET);
+        digitalWrite(ION_PIN, HIGH);
+        delay(ON_DELAY - RELAY_OFFSET);
+      } 
+      else {
+        digitalWrite(ION_PIN, LOW);
+        delay(RELAY_OFFSET);
+        digitalWrite(AIR_PIN, LOW);
+        delay(OFF_DELAY - RELAY_OFFSET);
+      }
+    }
+    prevVal = value;
+  }
 }
 
-void loop() {
-    Button button(ON_DELAY, OFF_DELAY, IR);
-    Relay LED(13);
-    while(true){
-        button.checkInput();
-        if(button.checkState()){
-            if(button.isPushed()){
-                LED.engage();                
-            }
-            else{
-                LED.disengage();
-            }
-        }
-    }
-}
