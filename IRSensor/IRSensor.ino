@@ -1,7 +1,7 @@
 #include <Bounce2.h>
 
 #define BUTTON_PIN 2
-#define ION_PIN 13
+#define ION_PIN 11
 #define AIR_PIN 12
 #define RELAY_OFFSET 50
 #define ON_DELAY 1000
@@ -23,7 +23,7 @@ void loop() {
         bool value = debouncer.read();
         digitalWrite(AIR_PIN, !value);
         delay(RELAY_OFFSET);
-        digitalWrite(ION_PIN, !value);
+        digitalWrite(ION_PIN, value);
         delay(ON_DELAY - RELAY_OFFSET);
     }
 }
