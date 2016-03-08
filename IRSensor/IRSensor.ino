@@ -1,29 +1,24 @@
-#include <Bounce2.h>
-
 #define BUTTON_PIN 2
 #define ION_PIN 11
 #define AIR_PIN 12
 #define RELAY_OFFSET 50
-#define ON_DELAY 1000
-#define OFF_DELAY 500
+#define ON_DELAY 50
+#define OFF_DELAY 25
 #define INTERVAL 25
 
-Bounce debouncer = Bounce(); 
-
 void setup() {
-    pinMode(BUTTON_PIN,INPUT_PULLUP);
-    debouncer.attach(BUTTON_PIN);
-    debouncer.interval(INTERVAL);
-    pinMode(ION_PIN, OUTPUT);
-    pinMode(AIR_PIN, OUTPUT);
+  // put your setup code here, to run once:
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
+  pinMode(ION_PIN, OUTPUT);
+  pinMode(AIR_PIN, OUTPUT);
 }
- 
+
 void loop() {
-    if(debouncer.update()){
-        bool value = debouncer.read();
-        digitalWrite(AIR_PIN, !value);
-        delay(RELAY_OFFSET);
-        digitalWrite(ION_PIN, value);
-        delay(ON_DELAY - RELAY_OFFSET);
-    }
+  if(digitalRead(BUTTON_PIN)){
+    digitalWrite(ION_PIN, HIGH);
+    digitalWrite(AIR_PIN, HIGH);
+  }else{
+    digitalWrite(ION_PIN, LOW);
+    digitalWrite(AIR_PIN, LOW);
+  }
 }
